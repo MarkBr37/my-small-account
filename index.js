@@ -4,7 +4,7 @@ const fs = require("fs");
 const utils = require("./utils");
 
 const server = http.createServer((req, res)=>{
-    console.log(req.url);
+    
 
     if( req.url === '/favicon.ico'){
         res.statusCode = 204;
