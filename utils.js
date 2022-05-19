@@ -4,9 +4,9 @@ const fs = require("fs");
 
 function handleGet(res){
     let data = fs.readFileSync('./data.json',{encoding:'utf8', flag:'r'})
-    data = JSON.parse(data)
     
     try{  
+        data = JSON.parse(data)
         if( data == "" || isNaN(parseFloat(data.num))){
             
             createFormat()
