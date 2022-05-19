@@ -1,0 +1,23 @@
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+.container{
+    margin: 150px auto 0 auto;
+    border: 2px black solid;
+    border-radius: 15px;
+    min-width: 300px;
+    max-width: 500px;
+    text-align: center;
+    font-size: 18px;
+
+}
+
+@media only screen and (max-width: 900px){
+    .container{
+        margin-top: 250px;
+        font-size: 20px;
+        border: 0px;
+    }
+}
