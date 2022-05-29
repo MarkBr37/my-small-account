@@ -69,12 +69,6 @@ const server = http.createServer((req, res)=>{
         return;
     }
 
-    if( req.url === '/js/utils.js'){
-        res.writeHead(200, {'Content-type': 'text/js'});
-        let data = fs.createReadStream(__dirname + '/public/js/utils.js');
-        data.pipe(res);
-        return;
-    }
     
     // if url not exist
     res.writeHead(200, {'Content-type': 'text/html'});

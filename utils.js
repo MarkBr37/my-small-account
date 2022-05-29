@@ -30,7 +30,6 @@ function badReq(res){
 }
 
 
-
 function checkData(data){
     let valid = true
     data.num = parseFloat(data.num);
