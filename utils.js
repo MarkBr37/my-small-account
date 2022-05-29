@@ -2,50 +2,14 @@ const fs = require("fs");
 
 //--------------------------------------------
 
-function handleGet(res){
-    let data = fs.readFileSync('./data.json',{encoding:'utf8', flag:'r'})
-    
-    try{  
-        data = JSON.parse(data)
-        if( data == "" || isNaN(parseFloat(data.num))){
-            
-            createFormat()
-            return serverErr(res)
-        }
-        
-        return JSON.stringify(data);
-
-    }catch(err){
-        
-        createFormat()
-        return serverErr(res)
-    }
-   
+function serverErr(res){
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({"num":0}));
+    res.end()
+    return false;
 }
 
-function handlePost(userData, res){
-   let data = fs.readFileSync('./data.json',{encoding:'utf8', flag:'r'})
-   
-   data = JSON.parse(data)
-   if( !data.num && data.num !== 0){
-       createFormat()
-       return serverErr(res);
-   }
-
-   if( isNaN(data.num) && isNaN(userData.num) ) return badReq(res);
-
-   data.num = addAndLower(data.num, userData);
-
-   fs.writeFile('./data.json', JSON.stringify(data), err => {
-       if(err){
-            createFormat()
-            return serverErr(res);
-       } 
-   })
-
-}
-
-function createFormat(){
+function createNewFormat(){
     fs.writeFile('./data.json', JSON.stringify({'num':0}), err => {
         if(err){
             console.log(err);
@@ -53,21 +17,19 @@ function createFormat(){
     }) 
 }
 
-
-//--------------------------------------------
-//basic
-
-function addAndLower(dataBaseNum, { num:userNum, op}){
-    let result;
-
-    if(op === 'Add'){
-        return result = dataBaseNum + userNum;
+function inArray(element, array){
+    for (let i = 0; i < array.length; i++) {
+        if(element == array[i]) return true        
     }
-    if(op === 'Lower'){
-        return result = dataBaseNum - userNum;
-    }  
-
+    return false
 }
+
+function badReq(res){
+    res.statusCode = 400;
+    res.end()
+}
+
+
 
 function checkData(data){
     let valid = true
@@ -98,23 +60,61 @@ function checkData(data){
     
 }
 
-function inArray(element, array){
-    for (let i = 0; i < array.length; i++) {
-        if(element == array[i]) return true        
+
+function handleGet(res){
+    let data = fs.readFileSync('./data.json',{encoding:'utf8', flag:'r'})
+    
+    try{  
+        data = JSON.parse(data)
+        if( data == "" || isNaN(parseFloat(data.num))){
+            
+            createNewFormat()
+            return serverErr(res)
+        }
+        
+        return JSON.stringify(data);
+
+    }catch(err){
+        
+        createNewFormat()
+        return serverErr(res)
     }
-    return false
+   
 }
 
-function badReq(res){
-    res.statusCode = 400;
-    res.end()
+function addAndLower(dataBaseNum, { num:userNum, op}){
+    let result;
+
+    if(op === 'Add'){
+        return result = dataBaseNum + userNum;
+    }
+    if(op === 'Lower'){
+        return result = dataBaseNum - userNum;
+    }  
+
 }
 
-function serverErr(res){
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({"num":0}));
-    res.end()
-    return false;
+function handlePost(userData, res){
+   let data = fs.readFileSync('./data.json',{encoding:'utf8', flag:'r'})
+   
+   data = JSON.parse(data)
+   if( !data.num && data.num !== 0){
+       createNewFormat()
+       return serverErr(res);
+   }
+
+   if( isNaN(data.num) && isNaN(userData.num) ) return badReq(res);
+
+   data.num = addAndLower(data.num, userData);
+
+   fs.writeFile('./data.json', JSON.stringify(data), err => {
+       if(err){
+            createNewFormat()
+            return serverErr(res);
+       } 
+   })
+
 }
+
 
 module.exports = {checkData, handlePost, handleGet, badReq }
