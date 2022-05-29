@@ -4,13 +4,14 @@ const fs = require("fs");
 const utils = require("./utils");
 
 const server = http.createServer((req, res)=>{
-    
+    // console.log(req.url);
 
     if( req.url === '/favicon.ico'){
         res.statusCode = 204;
         res.end();
         return;
     }
+
 
     if(req.url === '/getnum'){
 
@@ -23,6 +24,7 @@ const server = http.createServer((req, res)=>{
         }
         
     }
+
 
     if(req.method === "POST" & req.url === '/update'){
         
@@ -43,6 +45,7 @@ const server = http.createServer((req, res)=>{
         return;
     }
 
+
     if( req.url === '/'){
         res.writeHead(200, {'Content-type': 'text/html'});
         let data = fs.createReadStream(__dirname + '/public/main.html');
@@ -50,6 +53,7 @@ const server = http.createServer((req, res)=>{
         return;
     }
   
+
     if( req.url === '/css/style.css'){
         res.writeHead(200, {'Content-type': 'text/css'});
         let data = fs.createReadStream(__dirname + '/public/css/style.css');
@@ -57,9 +61,17 @@ const server = http.createServer((req, res)=>{
         return;
     }
 
+    
     if( req.url === '/js/main.js'){
         res.writeHead(200, {'Content-type': 'text/js'});
         let data = fs.createReadStream(__dirname + '/public/js/main.js');
+        data.pipe(res);
+        return;
+    }
+
+    if( req.url === '/js/utils.js'){
+        res.writeHead(200, {'Content-type': 'text/js'});
+        let data = fs.createReadStream(__dirname + '/public/js/utils.js');
         data.pipe(res);
         return;
     }

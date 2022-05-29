@@ -1,28 +1,53 @@
-// things to do
-// send http 
-// 1 function
-
-document.getElementById('Add').addEventListener('click',sendPost);
-document.getElementById('Lower').addEventListener('click',sendPost);
+document.getElementById('Add').addEventListener('click', handleSendPost);
+document.getElementById('Lower').addEventListener('click', handleSendPost);
 
 
 let inputNum = document.getElementById('inputNum');
 let theStoregeNum = document.getElementById('theStorageNum');
 
-async function getNum(){
+async function getNumFromServer(){
     const res = await fetch('http://localhost:3000/getnum')
     const data = await res.json()
     if(res.status == 500) alert('There was problem in server soo the dataBase was reset');
     theStoregeNum.innerText = parseFloat(data.num);
-    return 
+
 }
-getNum();
+
+getNumFromServer()
 
 
-async function sendPost(e){
+function addAndLower(eventName){
+    
+    if(eventName === 'Add'){
+        theStoregeNum.innerText = parseFloat(theStoregeNum.innerText) + parseFloat(inputNum.value);
+        return;
+    }else if(eventName === 'Lower'){
+        theStoregeNum.innerText = parseFloat(theStoregeNum.innerText) - parseFloat(inputNum.value);
+        return;
+    }   
+}
+
+function checkIfValid(userNum, stoNum){
+    if(!userNum){
+        alert('Please put a number')
+        inputNum.focus()
+        return false
+    }
+
+    let testNum = parseFloat(stoNum) + parseFloat(userNum);
+    if(isNaN(testNum)){
+        location.reload();
+        // just im case
+        return false
+    }
+
+    return true;
+}
+
+async function handleSendPost(e){
     e.preventDefault();
 
-    if(!check(inputNum.value, theStoregeNum.innerText)) return;
+    if(!checkIfValid(inputNum.value, theStoregeNum.innerText)) return;
 
     try{
     const res = await fetch('http://localhost:3000/update', {
@@ -50,32 +75,4 @@ async function sendPost(e){
     }
     
 
-}
-
-function addAndLower(eventName){
-    
-    if(eventName === 'Add'){
-        theStoregeNum.innerText = parseFloat(theStoregeNum.innerText) + parseFloat(inputNum.value);
-        return;
-    }else if(eventName === 'Lower'){
-        theStoregeNum.innerText = parseFloat(theStoregeNum.innerText) - parseFloat(inputNum.value);
-        return;
-    }   
-}
-
-function check(userNum, stoNum){
-    if(!userNum){
-        alert('Please put a number')
-        inputNum.focus()
-        return false
-    }
-
-    let testNum = parseFloat(stoNum) + parseFloat(userNum);
-    if(isNaN(testNum)){
-        location.reload();
-        // just im case
-        return false
-    }
-
-    return true;
 }
